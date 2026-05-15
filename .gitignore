@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+
+# Ignore any .env files that may contain sensitive information 
+
+uv.lock/
