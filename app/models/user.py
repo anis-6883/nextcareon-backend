@@ -2,9 +2,11 @@
 from typing import Optional, List
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
+
+from app.models.career_path import CareerPath
 # impoet file list - end
 
-class user(SQLModel, table=True): #As we can see in the ERD diagram 1:1 / 1:M relation 
+class User(SQLModel, table=True): #As we can see in the ERD diagram 1:1 / 1:M relation 
     __tablename__ = "user"
 
     user_id: Optional[int] = Field(default=None, primary_key=True) # PK
