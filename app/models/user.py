@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 
 from app.models.career_path import CareerPath
+from app.models.milestone import Milestone
 # impoet file list - end
 
 class User(SQLModel, table=True): #As we can see in the ERD diagram 1:1 / 1:M relation 

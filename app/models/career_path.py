@@ -4,6 +4,8 @@ from datetime import datetime
 from openai.resources import Skills
 from sqlmodel import SQLModel, Relationship, Field
 
+from app.models.project import Project
+from app.models.resource import Resource
 from app.models.user import User
 
 
