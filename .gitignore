@@ -1,9 +1,18 @@
-__pycache__/
-*.py[cod]
-.env
-.venv/
+# Python environment and cache
 venv/
-*.egg-info/
-dist/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 .pytest_cache/
-.mypy_cache/
+.coverage
+htmlcov/
+
+# Environment configurations
+.env
+
+# Ide/Editor files
+.vscode/
+.idea/
