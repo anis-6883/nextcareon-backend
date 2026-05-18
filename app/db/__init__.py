@@ -1,5 +1,5 @@
 from app.db.session import (
-    SessionDep,
+    Session,
     create_db_and_tables,
     drop_db_and_tables,
     engine,
@@ -20,7 +20,7 @@ __all__ = [
     # Session
     "engine",
     "get_session",
-    "SessionDep",
+    "Session",
     "create_db_and_tables",
     "drop_db_and_tables",
     # Redis
