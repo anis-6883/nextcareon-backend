@@ -20,7 +20,13 @@ def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
 
 
 def create_tokens_for_user(user: User) -> dict:
-    data = {"sub": str(user.user_id), "email": user.email, "role": user.role}
+    data = {
+        "sub": str(user.user_id),
+        "email": user.email,
+        "role": user.role,
+        "user_id": user.user_id,
+        "name": user.name
+    }
     access_token = security.create_access_token(data)
     refresh_token = security.create_refresh_token(data)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}

@@ -16,3 +16,5 @@ htmlcov/
 # Ide/Editor files
 .vscode/
 .idea/
+
+tests/

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from app.models.resource import Resource
     from app.models.skill import Skill
     from app.models.user import User
+    from app.models.course import Course
 
 
 class CareerPath(SQLModel, table=True):
@@ -41,3 +42,4 @@ class CareerPath(SQLModel, table=True):
     skills: List["Skill"] = Relationship(back_populates="career_path")
     projects: List["Project"] = Relationship(back_populates="career_path")
     resources: List["Resource"] = Relationship(back_populates="career_path")
+    courses: List["Course"] = Relationship(back_populates="career_path")

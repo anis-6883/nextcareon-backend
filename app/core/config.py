@@ -50,10 +50,27 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
+    # ── Admin Panel Configuration ────────────────────────────
+
+    # File upload settings
+    ADMIN_MAX_FILE_SIZE_MB: int = 500           # Max file size for resource uploads (MB)
+    ADMIN_ALLOWED_FILE_TYPES: list[str] = [    # Allowed file extensions
+        "pdf", "mp4", "mkv", "mov", "webm",     # Videos & docs
+        "jpg", "jpeg", "png", "gif", "webp",    # Images
+        "zip", "rar", "7z",                      # Archives
+        "docx", "doc", "xlsx", "xls", "pptx"    # Office docs
+    ]
+
+    # Audit logging
+    ADMIN_AUDIT_LOG_RETENTION_DAYS: int = 365   # Days to retain audit logs
+    ADMIN_ENABLE_AUDIT_LOGGING: bool = True     # Global audit logging toggle
+
+    # Admin settings
+    ADMIN_SESSION_TIMEOUT_MINUTES: int = 60     # Admin session timeout
+    ADMIN_MAX_LOGIN_ATTEMPTS: int = 5           # Failed login attempts before lockout
+    ADMIN_LOCKOUT_DURATION_MINUTES: int = 15    # Duration of login lockout
+
     # Gamification constants
-
-
-
 
 
 """""
