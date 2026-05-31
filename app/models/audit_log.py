@@ -4,10 +4,7 @@ from sqlmodel import SQLModel, Field
 
 
 class AdminAuditLog(SQLModel, table=True):
-    """
-    Immutable audit log for all administrative actions.
-    Automatically populated by audit middleware on every admin operation.
-    """
+"
 
     __tablename__ = "admin_audit_log"
 
