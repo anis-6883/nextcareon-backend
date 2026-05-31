@@ -1,7 +1,7 @@
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Optional, Any
 from pydantic import BaseModel
 
-DataType = TypeVar("DataType", bound=BaseModel)
+DataType = TypeVar("DataType")
 DocType = TypeVar("DocType", bound=BaseModel)
 
 
@@ -25,4 +25,4 @@ class StandardResponse(BaseModel, Generic[DataType]):
     """Standard API response envelope"""
     status: bool
     message: str
-    data: DataType
+    data: Optional[DataType] = None

@@ -1104,7 +1104,7 @@ def get_audit_logs(
                     "target_type": l.target_type,
                     "target_id": l.target_id,
                     "status": l.status,
-                    "timestamp": l.timestamp,
+                    "timestamp": l.timestamp.isoformat() if l.timestamp else None,
                     "details": l.details,
                     "ip_address": l.ip_address
                 }

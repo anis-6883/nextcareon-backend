@@ -5,8 +5,8 @@ Provides methods to create, query, and analyze audit logs.
 
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
-from sqlalchemy import select, func, desc
-from sqlmodel import Session
+from sqlalchemy import func, desc
+from sqlmodel import Session, select
 
 from app.models.audit_log import AdminAuditLog
 from app.core.config import settings
