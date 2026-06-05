@@ -1,0 +1,78 @@
+# ============================================================
+# Nextcareon Backend — requirements.txt
+# Stack: FastAPI + PostgreSQL + SQLModel + Redis
+# ============================================================
+
+# ── Web Framework ────────────────────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1          # ASGI server with websocket & reload support
+python-multipart==0.0.12           # Required for file uploads & form data
+
+# ── Database (ORM + Driver) ──────────────────────────────────
+sqlmodel==0.0.22                   # SQLModel ORM (built on SQLAlchemy + Pydantic)
+sqlalchemy==2.0.36                 # Core ORM engine (used by SQLModel internally)
+psycopg2-binary==2.9.10            # PostgreSQL driver (sync)
+asyncpg==0.30.0                    # PostgreSQL async driver (for async endpoints)
+pgvector==0.3.6                    # pgvector extension support (Phase 6: RAG embeddings)
+
+# ── Migrations ───────────────────────────────────────────────
+alembic==1.14.0                    # Database schema migrations
+
+# ── Cache ────────────────────────────────────────────────────
+redis==5.2.1                       # Redis client (sync + async)
+hiredis==3.1.0                     # C parser for Redis (10x faster than pure Python)
+
+# ── Authentication & Security ────────────────────────────────
+python-jose[cryptography]==3.3.0   # JWT encode/decode
+passlib[bcrypt]==1.7.4             # Password hashing (bcrypt)
+bcrypt==4.2.1                      # bcrypt backend for passlib
+
+# ── Configuration & Environment ──────────────────────────────
+pydantic==2.10.3                   # Data validation (v2, used by FastAPI & SQLModel)
+pydantic-settings==2.6.1           # .env loading with type safety
+
+# ── Background Tasks ─────────────────────────────────────────
+arq==0.26.1                        # Async job queue backed by Redis (score updates, achievements)
+
+# ── AI Assistant (Phase 6) ───────────────────────────────────
+anthropic==0.40.0                  # Anthropic Claude API client
+openai==1.57.4                     # OpenAI embeddings (text-embedding-3-small for RAG)
+tiktoken==0.8.0                    # Token counting for chunking pipeline
+
+# ── Text-to-Speech (Phase 2: Lesson TTS) ────────────────────
+gTTS==2.5.4                        # Google Text-to-Speech for lessons
+
+# ── File Storage ─────────────────────────────────────────────
+boto3==1.35.81                     # AWS S3 client (media/file uploads)
+python-magic==0.4.27               # MIME type detection for upload validation
+
+# ── Certificate Generation (Phase 2) ────────────────────────
+reportlab==4.2.5                   # PDF generation for certificates
+Pillow==11.0.0                     # Image processing (certificate logos, avatars)
+
+# ── Rate Limiting ────────────────────────────────────────────
+slowapi==0.1.9                     # Rate limiting for FastAPI (wraps limits library)
+limits==3.14.0                     # Rate limiting backend (used by slowapi)
+
+# ── Logging & Monitoring ─────────────────────────────────────
+structlog==24.4.0                  # Structured JSON logging
+sentry-sdk[fastapi]==2.19.2        # Error tracking & performance monitoring
+
+# ── HTTP Client (for internal service calls) ─────────────────
+httpx==0.28.1                      # Async HTTP client (used internally by Anthropic SDK)
+
+# ── Slug & Utility ───────────────────────────────────────────
+python-slugify==8.0.4              # URL-safe slug generation for courses/paths
+email-validator==2.2.0             # Email validation (required by Pydantic EmailStr)
+
+# ── Testing ──────────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.24.0             # Async test support
+pytest-cov==6.0.0                  # Test coverage reports
+httpx==0.28.1                      # Test client for FastAPI (already listed above)
+factory-boy==3.3.1                 # Test data factories
+faker==33.1.0                      # Fake data generation for tests
+
+# ── Code Quality ─────────────────────────────────────────────
+ruff==0.8.4                        # Linter + formatter (replaces flake8, isort, black)
+mypy==1.13.0                       # Static type checking
