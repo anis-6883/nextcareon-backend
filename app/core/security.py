@@ -5,6 +5,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from app.core.config import settings
+from app.cache.redis import redis_client
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -20,13 +21,15 @@ def hash_password(password: str) -> str:
 
 
 def create_access_token(
-    subject: str, expires_delta: Optional[timedelta] = None
+    subject: str, role: Optional[str] = None, expires_delta: Optional[timedelta] = None
 ) -> str:
-    """Create a JWT access token."""
+    """Create a JWT access token with optional role claim."""
     expire = datetime.utcnow() + (
         expires_delta or timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     to_encode = {"exp": expire, "sub": str(subject)}
+    if role:
+        to_encode["role"] = role
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
@@ -46,3 +49,20 @@ def decode_token(token: str) -> Optional[str]:
         return payload.get("sub")
     except JWTError:
         return None
+
+
+def decode_token_with_role(token: str) -> Optional[dict]:
+    """Decode a JWT token and return the full payload including role."""
+    try:
+        payload = jwt.decode(
+            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
+        return payload
+    except JWTError:
+        return None
+
+
+async def store_refresh_token(user_id: str, token: str) -> None:
+    """Store refresh token in Redis for validation on refresh."""
+    expire_days = settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+    await redis_client.setex(f"refresh_token:{user_id}", expire_days * 86400, token)

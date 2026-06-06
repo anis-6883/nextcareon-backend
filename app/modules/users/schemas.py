@@ -2,19 +2,31 @@
 
 from datetime import datetime
 from typing import Optional
-from uuid import UUID
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
+from app.utils.validators import validate_password_strength
 
 
 class StudentSignup(BaseModel):
-    """Student registration schema."""
-    full_name: str = Field(max_length=255)
+    """Student registration schema with strong password validation."""
+    full_name: str = Field(min_length=2, max_length=255)
     email: EmailStr
     password: str = Field(min_length=8, max_length=100)
     country: str = Field(default="Bangladesh", max_length=100)
     education_level: Optional[str] = Field(default=None, max_length=100)
     experience_level: Optional[str] = Field(default=None, max_length=100)
     dream_career: Optional[str] = Field(default=None, max_length=255)
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        return validate_password_strength(v)
+
+    @field_validator("full_name")
+    @classmethod
+    def validate_full_name(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("Full name cannot be empty")
+        return v.strip()
 
 
 class StudentRead(BaseModel):
@@ -42,7 +54,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     """Token payload data."""
-    student_id: Optional[str] = None
+    user_id: Optional[str] = None
+    role: Optional[str] = None
 
 
 class UserLogin(BaseModel):

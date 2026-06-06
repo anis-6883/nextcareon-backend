@@ -3,7 +3,7 @@
 from typing import Optional
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.modules.users.models import AdminUser
+from app.modules.users.models import AdminUser, UserRole
 from app.core.security import hash_password
 from app.core.exceptions import NotFoundException, ForbiddenException
 
@@ -22,11 +22,12 @@ async def create_admin(
     role: str = "content_manager",
 ) -> AdminUser:
     """Create a new admin user."""
+    admin_role = UserRole.SUPER_ADMIN if role == "super_admin" else UserRole.CONTENT_MANAGER
     admin = AdminUser(
         full_name=full_name,
         email=email,
         password_hash=hash_password(password),
-        role=role,
+        role=admin_role,
     )
     session.add(admin)
     await session.commit()
@@ -39,7 +40,7 @@ async def create_first_admin(session: AsyncSession) -> Optional[AdminUser]:
     result = await session.exec(select(AdminUser))
     if result.first():
         return None
-    
+
     from app.core.config import settings
     return await create_admin(
         session,
