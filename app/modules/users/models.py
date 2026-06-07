@@ -1,9 +1,9 @@
 """app/modules/users/models.py - Student and Admin user models."""
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from uuid import uuid4
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 import enum
 
 
@@ -47,6 +47,38 @@ class Student(SQLModel, table=True):
     coins: int = Field(default=0, nullable=False)
     daily_streak: int = Field(default=0, nullable=False)
     created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+    enrollments: List["Enrollment"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    career_enrollments: List["StudentCareerPath"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    lesson_progress: List["LessonProgress"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    quiz_attempts: List["QuizAttempt"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    assignment_submissions: List["StudentAssignmentSubmission"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    project_submissions: List["StudentProjectSubmission"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+
+
+from app.modules.courses.models import (
+    Enrollment, LessonProgress, QuizAttempt,
+    StudentAssignmentSubmission, StudentProjectSubmission
+)
+from app.modules.career_paths.models import StudentCareerPath
 
 
 class AdminUser(SQLModel, table=True):

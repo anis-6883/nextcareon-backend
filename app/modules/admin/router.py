@@ -13,6 +13,7 @@ from app.modules.admin.schemas import (
     AdminUserCreate,
 )
 from app.modules.admin.service import get_admin_by_email, create_admin
+from app.modules.admin.market_intelligence.router import router as market_intelligence_router
 from app.modules.users.models import Student, AdminUser
 from app.modules.users.service import get_student_by_id
 from app.db.engine import get_session
@@ -29,6 +30,7 @@ class Token(BaseModel):
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+router.include_router(market_intelligence_router)
 
 
 @router.post("/login", response_model=Token)

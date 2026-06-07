@@ -18,6 +18,9 @@ class StudentCourseProgress(SQLModel, table=True):
     enrolled_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
     completed_at: Optional[datetime] = Field(default=None)
 
+    student: Optional["Student"] = Relationship()
+    course: Optional["Course"] = Relationship()
+
 
 class StudentChapterProgress(SQLModel, table=True):
     """Tracks student chapter completion."""
@@ -39,3 +42,7 @@ class MockInterviewSession(SQLModel, table=True):
     score_percent: int = Field(default=0, nullable=False, ge=0, le=100)
     feedback: str = Field(default="", nullable=False)
     conducted_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+
+from app.modules.users.models import Student
+from app.modules.courses.models import Course
