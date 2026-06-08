@@ -12,8 +12,8 @@ router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 async def create_portfolio_project(
     title: str,
     description: str,
-    project_url: str = "",
-    github_url: str = "",
+    repository_url: str = "",
+    live_url: str = "",
     session: AsyncSession = Depends(get_session),
     student=Depends(get_current_student),
 ):
@@ -23,8 +23,8 @@ async def create_portfolio_project(
         student_id=str(student.id),
         title=title,
         description=description,
-        project_url=project_url,
-        github_url=github_url,
+        repository_url=repository_url,
+        live_url=live_url,
     )
     session.add(project)
     await session.commit()

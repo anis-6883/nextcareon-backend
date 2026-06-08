@@ -7,6 +7,7 @@ except ImportError:
     RedisSettings = None
 
 from app.core.config import settings
+from app.modules.career_score.service import recalculate_student_score
 
 
 async def startup(ctx):
@@ -27,7 +28,9 @@ class ARQWorker:
         if Worker is None:
             raise ImportError("arq not installed")
         return Worker(
-            functions=[],
+            functions=[
+                {"recalculate_student_score": recalculate_student_score},
+            ],
             redis_settings=RedisSettings.from_url(settings.REDIS_URL),
             startup=startup,
             shutdown=shutdown,

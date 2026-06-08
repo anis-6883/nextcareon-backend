@@ -4,6 +4,7 @@ Usage:  from app.core.config import settings
 """
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Dict
 
 
 class Settings(BaseSettings):
@@ -43,6 +44,19 @@ class Settings(BaseSettings):
     FIRST_ADMIN_EMAIL: str = "admin@nextcareon.com"
     FIRST_ADMIN_PASSWORD: str = "change-me-immediately"
     FIRST_ADMIN_NAME: str = "Super Admin"
+
+    # ── Score Weights ─────────────────────────────────────────
+    score_weights: Dict[str, int] = {
+        "course_completion": 15,
+        "quiz_performance": 15,
+        "project_quality": 30,
+        "portfolio_strength": 20,
+        "mock_interview": 20,
+    }
+
+    # ── Worker Settings ──────────────────────────────────────
+    WORKER_CONCURRENCY: int = 10
+    WORKER_JOB_TIMEOUT: int = 300
 
 
 settings = Settings()

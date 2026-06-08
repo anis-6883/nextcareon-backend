@@ -72,6 +72,14 @@ class Student(SQLModel, table=True):
         back_populates="student",
         sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
     )
+    career_score: Optional["CareerScore"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    mock_interview_credits: Optional["MockInterviewCredit"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
 
 
 from app.modules.courses.models import (
