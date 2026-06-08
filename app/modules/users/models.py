@@ -80,6 +80,26 @@ class Student(SQLModel, table=True):
         back_populates="student",
         sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
     )
+    coin_ledger: List["CoinLedger"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    balance: Optional["UserBalance"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    achievements: List["UserAchievement"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    inventory: List["StudentInventory"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
+    ai_credit_gate: Optional["AiCreditGate"] = Relationship(
+        back_populates="student",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan", "lazy": "selectin"}
+    )
 
 
 from app.modules.courses.models import (
@@ -87,6 +107,10 @@ from app.modules.courses.models import (
     StudentAssignmentSubmission, StudentProjectSubmission
 )
 from app.modules.career_paths.models import StudentCareerPath
+from app.modules.career_score.models import CareerScore, MockInterviewCredit
+from app.modules.gamification.models import (
+    CoinLedger, UserBalance, UserAchievement, StudentInventory, AiCreditGate
+)
 
 
 class AdminUser(SQLModel, table=True):
