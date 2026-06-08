@@ -13,6 +13,7 @@ from app.modules.admin.router import router as admin_router
 from app.modules.lessons.router import router as lessons_router
 from app.modules.career_score.router import router as career_score_router
 from app.modules.gamification.router import router as gamification_router
+from app.modules.ai_assistant.router import router as ai_assistant_router
 
 api_router = APIRouter()
 api_router.include_router(auth_router)
@@ -27,3 +28,4 @@ api_router.include_router(admin_router)
 api_router.include_router(lessons_router)
 api_router.include_router(career_score_router)
 api_router.include_router(gamification_router)
+api_router.include_router(ai_assistant_router)
