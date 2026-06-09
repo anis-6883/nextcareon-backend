@@ -2,7 +2,7 @@
 
 from typing import Optional, Tuple
 from sqlmodel import select
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.users.models import Student, AdminUser
 from app.core.security import (
     hash_password,
@@ -17,14 +17,14 @@ from app.cache.redis import redis_client
 
 async def get_student_by_email(session: AsyncSession, email: str) -> Optional[Student]:
     """Get student by email."""
-    result = await session.exec(select(Student).where(Student.email == email))
-    return result.first()
+    result = await session.execute(select(Student).where(Student.email == email))
+    return result.scalar_one_or_none()
 
 
 async def get_admin_by_email(session: AsyncSession, email: str) -> Optional[AdminUser]:
     """Get admin by email."""
-    result = await session.exec(select(AdminUser).where(AdminUser.email == email))
-    return result.first()
+    result = await session.execute(select(AdminUser).where(AdminUser.email == email))
+    return result.scalar_one_or_none()
 
 
 async def create_student(

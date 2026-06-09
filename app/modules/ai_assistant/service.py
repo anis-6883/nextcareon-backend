@@ -49,7 +49,7 @@ async def create_or_get_conversation(
     course_id: Optional[str] = None,
 ) -> AiConversation:
     """Create or retrieve existing conversation."""
-    conv = (await session.exec(
+    conv = (await session.execute(
         select(AiConversation).where(
             AiConversation.student_id == student_id,
             AiConversation.course_id == course_id,
@@ -88,7 +88,7 @@ async def chat_with_ai(
     await session.commit()
     await session.refresh(user_message)
     
-    history = (await session.exec(
+    history = (await session.execute(
         select(AiMessage)
         .where(AiMessage.conversation_id == conv.id)
         .order_by(AiMessage.created_at.desc())

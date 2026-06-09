@@ -22,7 +22,7 @@ async def create_quiz(
     chapter_id: str,
     **kwargs
 ) -> Quiz:
-    existing = await session.exec(
+    existing = await session.execute(
         select(Quiz).where(Quiz.chapter_id == chapter_id)
     )
     if existing.first():
@@ -55,7 +55,7 @@ async def submit_quiz(
     quiz = await get_quiz_by_id(session, quiz_id)
     
     questions_dict = {}
-    for q in await session.exec(select(Question).where(Question.quiz_id == quiz_id)):
+    for q in await session.execute(select(Question).where(Question.quiz_id == quiz_id)):
         questions_dict[q.id] = q
     
     correct_count = 0
@@ -70,7 +70,7 @@ async def submit_quiz(
     passed = score >= quiz.pass_score
     
     attempt_number = 1
-    existing_attempts = await session.exec(
+    existing_attempts = await session.execute(
         select(QuizAttempt).where(
             QuizAttempt.student_id == student_id,
             QuizAttempt.quiz_id == quiz_id
@@ -100,7 +100,7 @@ async def get_student_quiz_attempts(
     student_id: str,
     quiz_id: str
 ) -> List[QuizAttempt]:
-    result = await session.exec(
+    result = await session.execute(
         select(QuizAttempt)
         .where(
             QuizAttempt.student_id == student_id,

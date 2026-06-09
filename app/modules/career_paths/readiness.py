@@ -78,7 +78,7 @@ async def _calculate_course_completion_score(
     completed_courses = 0
     
     for path_course in path.courses:
-        result = await session.exec(
+        result = await session.execute(
             select(Enrollment).where(
                 Enrollment.student_id == student_id,
                 Enrollment.course_id == path_course.course_id
@@ -100,7 +100,7 @@ async def _calculate_quiz_performance_score(
     if not course_ids:
         return 0.0
     
-    result = await session.exec(
+    result = await session.execute(
         select(QuizAttempt).where(
             QuizAttempt.student_id == student_id
         )
@@ -132,7 +132,7 @@ async def _calculate_project_quality_score(
     if not course_ids:
         return 0.0
     
-    result = await session.exec(
+    result = await session.execute(
         select(StudentProjectSubmission).where(
             StudentProjectSubmission.student_id == student_id
         )
@@ -143,7 +143,7 @@ async def _calculate_project_quality_score(
         return 0.0
     
     from app.modules.courses.models import Project
-    project_ids = (await session.exec(
+    project_ids = (await session.execute(
         select(Project).where(Project.course_id.in_(course_ids))
     )).all()
     project_id_set = {p.id for p in project_ids}
@@ -165,7 +165,7 @@ async def _calculate_portfolio_strength_score(
     session: AsyncSession,
     student_id: str
 ) -> float:
-    result = await session.exec(
+    result = await session.execute(
         select(PortfolioProject).where(PortfolioProject.student_id == student_id)
     )
     projects = result.all()

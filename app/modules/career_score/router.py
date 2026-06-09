@@ -29,7 +29,7 @@ router = APIRouter()
 async def get_public_profile(username: str):
     """Get public profile for a student by username/email."""
     async with get_session() as session:
-        student = (await session.exec(
+        student = (await session.execute(
             select(Student).where(Student.email == username)
         )).first()
         
@@ -80,7 +80,7 @@ async def override_score(
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    career_score = (await session.exec(
+    career_score = (await session.execute(
         select(CareerScore).where(CareerScore.student_id == request.student_id)
     )).first()
     

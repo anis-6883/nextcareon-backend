@@ -14,7 +14,7 @@ async def check_achievements_job(student_id: str) -> list[str]:
     """
     async with async_session() as session:
         student = await session.get(Student, student_id)
-        achievements = await session.exec(select(Achievement))
+        achievements = await session.execute(select(Achievement))
         earned = []
         
         for achievement in achievements:

@@ -24,7 +24,7 @@ async def grade_quiz_attempt(
         raise NotFoundException(resource="Quiz")
     
     # Get all questions for the quiz
-    questions = await session.exec(
+    questions = await session.execute(
         select(QuizQuestion).where(QuizQuestion.quiz_id == quiz_id)
     )
     questions = questions.all()
@@ -63,7 +63,7 @@ async def get_quiz_result(
     session: AsyncSession, student_id: str, quiz_id: str
 ) -> Optional[StudentQuizResult]:
     """Get student's quiz result."""
-    result = await session.exec(
+    result = await session.execute(
         select(StudentQuizResult)
         .where(
             StudentQuizResult.student_id == student_id,

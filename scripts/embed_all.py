@@ -11,7 +11,7 @@ from app.background.tasks.embed_lesson import embed_lesson_content
 async def embed_all_lessons() -> None:
     """Generate embeddings for all lessons."""
     async with async_session() as session:
-        lessons = await session.exec(select(Lesson))
+        lessons = await session.execute(select(Lesson))
         lessons = lessons.all()
         
         for lesson in lessons:

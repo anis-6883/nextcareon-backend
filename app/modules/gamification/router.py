@@ -70,7 +70,7 @@ async def exchange_ai_credits_endpoint(
     """Exchange 100 coins for 10 AI questions."""
     success, msg = await exchange_ai_credits(session, str(student.id))
     
-    ai_gate_result = (await session.exec(
+    ai_gate_result = (await session.execute(
         select(AiCreditGate).where(AiCreditGate.student_id == str(student.id))
     )).first()
     remaining = ai_gate_result.remaining_ai_questions if ai_gate_result else 0

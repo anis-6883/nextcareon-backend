@@ -21,7 +21,7 @@ async def list_assignments(
     course_id: str,
     session: AsyncSession = Depends(get_session),
 ):
-    result = await session.exec(
+    result = await session.execute(
         select(Assignment).where(Assignment.course_id == course_id)
     )
     return result.all()
@@ -94,7 +94,7 @@ async def get_assignment_submissions(
     session: AsyncSession = Depends(get_session),
     student=Depends(get_current_student),
 ):
-    result = await session.exec(
+    result = await session.execute(
         select(StudentAssignmentSubmission).where(
             StudentAssignmentSubmission.assignment_id == assignment_id,
             StudentAssignmentSubmission.student_id == student.id
@@ -108,7 +108,7 @@ async def list_projects(
     course_id: str,
     session: AsyncSession = Depends(get_session),
 ):
-    result = await session.exec(
+    result = await session.execute(
         select(Project).where(Project.course_id == course_id)
     )
     return result.all()
@@ -156,7 +156,7 @@ async def get_project_submissions(
     session: AsyncSession = Depends(get_session),
     student=Depends(get_current_student),
 ):
-    result = await session.exec(
+    result = await session.execute(
         select(StudentProjectSubmission).where(
             StudentProjectSubmission.project_id == project_id,
             StudentProjectSubmission.student_id == student.id

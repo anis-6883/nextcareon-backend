@@ -1,10 +1,13 @@
 """app/modules/ai_assistant/router.py - AI assistant API endpoints."""
 
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.db.engine import get_session
 from app.core.dependencies import get_current_student
+from app.core.config import settings
 from app.modules.ai_assistant.service import (
     chat_with_ai,
     explain_quiz_answer,
@@ -17,12 +20,16 @@ from app.modules.ai_assistant.schemas import (
     ProjectSuggestionsRequest,
 )
 
+
+limiter = Limiter(key_func=get_remote_address, storage_uri=settings.REDIS_URL)
 router = APIRouter(prefix="/ai", tags=["ai-assistant"])
 
 
 @router.post("/chat", response_model=ChatResponse)
+@limiter.limit(settings.AI_RATE_LIMIT_STR)
 async def chat_endpoint(
-    request: ChatRequest,
+    request: Request,
+    chat_request: ChatRequest,
     student=Depends(get_current_student),
     session: AsyncSession = Depends(get_session),
 ):
@@ -31,10 +38,10 @@ async def chat_endpoint(
         answer = await chat_with_ai(
             session=session,
             student_id=str(student.id),
-            message=request.message,
-            conversation_id=request.conversation_id,
-            lesson_id=request.lesson_id,
-            course_id=request.course_id,
+            message=chat_request.message,
+            conversation_id=chat_request.conversation_id,
+            lesson_id=chat_request.lesson_id,
+            course_id=chat_request.course_id,
         )
         return ChatResponse(answer=answer)
     except Exception as e:
@@ -42,8 +49,9 @@ async def chat_endpoint(
 
 
 @router.post("/explain-quiz")
+@limiter.limit(settings.AI_RATE_LIMIT_STR)
 async def explain_quiz_endpoint(
-    request: ExplainQuizRequest,
+    request: Request,
     student=Depends(get_current_student),
     session: AsyncSession = Depends(get_session),
 ):
@@ -63,8 +71,9 @@ async def explain_quiz_endpoint(
 
 
 @router.post("/generate-projects")
+@limiter.limit(settings.AI_RATE_LIMIT_STR)
 async def generate_projects_endpoint(
-    request: ProjectSuggestionsRequest,
+    request: Request,
     student=Depends(get_current_student),
     session: AsyncSession = Depends(get_session),
 ):

@@ -11,8 +11,11 @@ engine = create_async_engine(
     pool_pre_ping=True,
 )
 
+# Use SQLAlchemy's AsyncSession with sessionmaker
 async_session = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
+    engine, 
+    class_=AsyncSession, 
+    expire_on_commit=False
 )
 
 

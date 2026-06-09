@@ -31,7 +31,7 @@ async def get_current_student(
     if user.get("role") != "student":
         raise ForbiddenException(detail="Student access required")
 
-    result = await session.exec(select(Student).where(Student.id == user.get("sub")))
+    result = await session.execute(select(Student).where(Student.id == user.get("sub")))
     student = result.first()
     if not student:
         raise AuthException()
@@ -46,7 +46,7 @@ async def get_current_admin(
     if user.get("role") != "admin":
         raise ForbiddenException(detail="Admin access required")
 
-    result = await session.exec(select(AdminUser).where(AdminUser.id == user.get("sub")))
+    result = await session.execute(select(AdminUser).where(AdminUser.id == user.get("sub")))
     admin = result.first()
     if not admin:
         raise AuthException()

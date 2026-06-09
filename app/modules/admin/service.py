@@ -10,7 +10,7 @@ from app.core.exceptions import NotFoundException, ForbiddenException
 
 async def get_admin_by_email(session: AsyncSession, email: str) -> Optional[AdminUser]:
     """Get admin by email."""
-    result = await session.exec(select(AdminUser).where(AdminUser.email == email))
+    result = await session.execute(select(AdminUser).where(AdminUser.email == email))
     return result.first()
 
 
@@ -37,7 +37,7 @@ async def create_admin(
 
 async def create_first_admin(session: AsyncSession) -> Optional[AdminUser]:
     """Create the first admin if none exists (for seeding)."""
-    result = await session.exec(select(AdminUser))
+    result = await session.execute(select(AdminUser))
     if result.first():
         return None
 

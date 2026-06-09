@@ -32,7 +32,7 @@ async def create_company_endpoint(
     session: AsyncSession = Depends(get_session),
     admin: AdminUser = Depends(get_current_admin),
 ):
-    existing = await session.exec(
+    existing = await session.execute(
         session.query(Company).where(Company.name == data.name)
     ) if (company := await get_company_by_id(session, data.name)) else None
     
@@ -48,7 +48,7 @@ async def list_companies(
 ):
     from sqlmodel import select
     from app.modules.career_paths.models import Company
-    result = await session.exec(select(Company))
+    result = await session.execute(select(Company))
     return result.all()
 
 
@@ -118,7 +118,7 @@ async def list_salary_ranges(
 ):
     from sqlmodel import select
     from app.modules.career_paths.models import SalaryRange
-    result = await session.exec(select(SalaryRange))
+    result = await session.execute(select(SalaryRange))
     return result.all()
 
 
@@ -187,7 +187,7 @@ async def list_job_openings(
 ):
     from sqlmodel import select
     from app.modules.career_paths.models import JobOpening
-    result = await session.exec(select(JobOpening))
+    result = await session.execute(select(JobOpening))
     return result.all()
 
 
@@ -256,7 +256,7 @@ async def list_alumni(
 ):
     from sqlmodel import select
     from app.modules.career_paths.models import AlumniShowcase
-    result = await session.exec(select(AlumniShowcase))
+    result = await session.execute(select(AlumniShowcase))
     return result.all()
 
 

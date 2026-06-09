@@ -110,5 +110,5 @@ class TestAdminAuthorization:
         )
         assert response.status_code == 204
 
-        result = await async_session.exec(select(Student).where(Student.id == "student-to-delete"))
+        result = await async_session.execute(select(Student).where(Student.id == "student-to-delete"))
         assert result.first() is None

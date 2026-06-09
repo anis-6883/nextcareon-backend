@@ -42,7 +42,7 @@ async def list_career_paths(
     if cached:
         return [CareerPathRead.model_validate(cp) for cp in json.loads(cached)]
     
-    result = await session.exec(select(CareerPath))
+    result = await session.execute(select(CareerPath))
     paths = result.all()
     data = [CareerPathRead.model_validate(p.model_dump()).model_dump() for p in paths]
     await redis.setex(cache_key, CACHE_TTL, json.dumps(data))
@@ -65,14 +65,14 @@ async def get_career_path(
         from app.core.exceptions import NotFoundException
         raise NotFoundException(resource="Career Path")
     
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPathCourse).where(CareerPathCourse.career_path_id == path_id)
     )
     path_course_links = result.all()
     course_ids = [pcl.course_id for pcl in path_course_links]
     
     from app.modules.courses.models import Course
-    courses_result = await session.exec(
+    courses_result = await session.execute(
         select(Course).where(Course.id.in_(course_ids))
     )
     courses = courses_result.all()
@@ -96,7 +96,7 @@ async def get_career_path_market_data(
         return json.loads(cached)
     
     from app.modules.career_paths.models import CareerPathMarketData
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPathMarketData).where(CareerPathMarketData.career_path_id == path_id)
     )
     market_data = result.first()
@@ -125,7 +125,7 @@ async def list_job_openings(
     query = select(JobOpening).where(JobOpening.is_active == True)
     if career_path_id:
         query = query.where(JobOpening.career_path_id == career_path_id)
-    result = await session.exec(query)
+    result = await session.execute(query)
     openings = result.all()
     
     data = [JobOpeningRead.model_validate(j.model_dump()).model_dump() for j in openings]
@@ -142,7 +142,7 @@ async def list_companies(
     if cached:
         return [CompanyRead.model_validate(c) for c in json.loads(cached)]
     
-    result = await session.exec(
+    result = await session.execute(
         select(Company).where(Company.is_active == True)
     )
     companies = result.all()
@@ -166,7 +166,7 @@ async def list_alumni(
     query = select(AlumniShowcase)
     if career_path_id:
         query = query.where(AlumniShowcase.career_path_id == career_path_id)
-    result = await session.exec(query)
+    result = await session.execute(query)
     alumni = result.all()
     data = [AlumniShowcaseRead.model_validate(a.model_dump()).model_dump() for a in alumni]
     await redis.setex(cache_key, CACHE_TTL, json.dumps(data))
@@ -183,7 +183,7 @@ async def list_salary_ranges(
     if cached:
         return json.loads(cached)
     
-    result = await session.exec(select(SalaryRange))
+    result = await session.execute(select(SalaryRange))
     salary_ranges = result.all()
     data = [sr.model_dump() for sr in salary_ranges]
     await redis.setex(cache_key, CACHE_TTL, json.dumps(data))

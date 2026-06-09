@@ -10,7 +10,7 @@ from app.core.exceptions import NotFoundException, AuthException
 
 async def get_student_by_email(session: AsyncSession, email: str) -> Optional[Student]:
     """Get student by email."""
-    result = await session.exec(select(Student).where(Student.email == email))
+    result = await session.execute(select(Student).where(Student.email == email))
     return result.first()
 
 
@@ -24,7 +24,7 @@ async def get_student_by_id(session: AsyncSession, student_id: str) -> Student:
 
 async def get_admin_by_email(session: AsyncSession, email: str) -> Optional[AdminUser]:
     """Get admin by email."""
-    result = await session.exec(select(AdminUser).where(AdminUser.email == email))
+    result = await session.execute(select(AdminUser).where(AdminUser.email == email))
     return result.first()
 
 

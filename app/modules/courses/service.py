@@ -14,7 +14,7 @@ import tempfile
 
 
 async def get_course_by_slug(session: AsyncSession, slug: str) -> Optional[Course]:
-    result = await session.exec(select(Course).where(Course.slug == slug))
+    result = await session.execute(select(Course).where(Course.slug == slug))
     return result.first()
 
 
@@ -26,7 +26,7 @@ async def get_course_by_id(session: AsyncSession, course_id: str) -> Course:
 
 
 async def get_courses(session: AsyncSession) -> List[Course]:
-    result = await session.exec(select(Course).order_by(Course.created_at))
+    result = await session.execute(select(Course).order_by(Course.created_at))
     return result.all()
 
 
@@ -73,7 +73,7 @@ async def delete_course(session: AsyncSession, course_id: str) -> None:
 
 
 async def get_chapters_by_course(session: AsyncSession, course_id: str) -> List[Chapter]:
-    result = await session.exec(
+    result = await session.execute(
         select(Chapter)
         .where(Chapter.course_id == course_id)
         .order_by(Chapter.order_index)
@@ -95,7 +95,7 @@ async def create_chapter(
 
 
 async def get_lessons_by_chapter(session: AsyncSession, chapter_id: str) -> List[Lesson]:
-    result = await session.exec(
+    result = await session.execute(
         select(Lesson)
         .where(Lesson.chapter_id == chapter_id)
         .order_by(Lesson.order_index)
@@ -110,7 +110,7 @@ async def create_lesson(
     **kwargs
 ) -> Lesson:
     course = await get_course_by_id(session, course_id)
-    chapter_result = await session.exec(
+    chapter_result = await session.execute(
         select(Chapter).where(Chapter.id == chapter_id)
     )
     chapter = chapter_result.first()
@@ -125,7 +125,7 @@ async def create_lesson(
 
 
 async def enroll_student(session: AsyncSession, student_id: str, course_id: str) -> Enrollment:
-    existing = await session.exec(
+    existing = await session.execute(
         select(Enrollment).where(
             Enrollment.student_id == student_id,
             Enrollment.course_id == course_id
@@ -142,7 +142,7 @@ async def enroll_student(session: AsyncSession, student_id: str, course_id: str)
 
 
 async def get_student_dashboard(session: AsyncSession, student_id: str) -> dict:
-    enrollments_result = await session.exec(
+    enrollments_result = await session.execute(
         select(Enrollment).where(Enrollment.student_id == student_id)
     )
     enrollments = enrollments_result.all()
@@ -155,12 +155,12 @@ async def get_student_dashboard(session: AsyncSession, student_id: str) -> dict:
         if not course:
             continue
         
-        lessons_result = await session.exec(
+        lessons_result = await session.execute(
             select(Lesson).where(Lesson.course_id == course.id)
         )
         total_lessons = len(lessons_result.all())
         
-        progress_result = await session.exec(
+        progress_result = await session.execute(
             select(LessonProgress).where(
                 LessonProgress.student_id == student_id,
                 LessonProgress.lesson_id.in_([l.id for l in lessons_result.all()])
@@ -188,7 +188,7 @@ async def get_student_dashboard(session: AsyncSession, student_id: str) -> dict:
 
 
 async def complete_lesson(session: AsyncSession, student_id: str, lesson_id: str) -> dict:
-    existing = await session.exec(
+    existing = await session.execute(
         select(LessonProgress).where(
             LessonProgress.student_id == student_id,
             LessonProgress.lesson_id == lesson_id
@@ -244,13 +244,13 @@ async def get_lesson_tts_audio(session: AsyncSession, lesson_id: str):
 async def get_course_progress(session: AsyncSession, student_id: str, course_id: str) -> dict:
     course = await get_course_by_id(session, course_id)
     
-    lessons_result = await session.exec(
+    lessons_result = await session.execute(
         select(Lesson).where(Lesson.course_id == course_id)
     )
     lessons = lessons_result.all()
     total_lessons = len(lessons)
     
-    progress_result = await session.exec(
+    progress_result = await session.execute(
         select(LessonProgress).where(
             LessonProgress.student_id == student_id,
             LessonProgress.lesson_id.in_([l.id for l in lessons])
@@ -276,7 +276,7 @@ async def generate_certificate(session: AsyncSession, student_id: str, course_id
     from reportlab.lib.units import inch
     import uuid
     
-    enrollment = await session.exec(
+    enrollment = await session.execute(
         select(Enrollment).where(
             Enrollment.student_id == student_id,
             Enrollment.course_id == course_id
@@ -291,11 +291,11 @@ async def generate_certificate(session: AsyncSession, student_id: str, course_id
     from app.modules.users.models import Student as StudentModel
     student = await session.get(StudentModel, student_id)
     
-    lessons_result = await session.exec(select(Lesson).where(Lesson.course_id == course_id))
+    lessons_result = await session.execute(select(Lesson).where(Lesson.course_id == course_id))
     lessons = lessons_result.all()
     total_lessons = len(lessons)
     
-    progress_result = await session.exec(
+    progress_result = await session.execute(
         select(LessonProgress).where(
             LessonProgress.student_id == student_id,
             LessonProgress.lesson_id.in_([l.id for l in lessons])
@@ -303,14 +303,14 @@ async def generate_certificate(session: AsyncSession, student_id: str, course_id
     )
     completed_lessons = len(progress_result.all())
     
-    quiz_result = await session.exec(
+    quiz_result = await session.execute(
         select(Quiz).where(Quiz.course_id == course_id)
     )
     quizzes = quiz_result.all()
     
     passed_quizzes = 0
     for quiz in quizzes:
-        attempt = await session.exec(
+        attempt = await session.execute(
             select(QuizAttempt).where(
                 QuizAttempt.student_id == student_id,
                 QuizAttempt.quiz_id == quiz.id
@@ -320,10 +320,10 @@ async def generate_certificate(session: AsyncSession, student_id: str, course_id
         if attempt and attempt.passed:
             passed_quizzes += 1
     
-    project_result = await session.exec(
+    project_result = await session.execute(
         select(StudentProjectSubmission).where(
             StudentProjectSubmission.student_id == student_id,
-            StudentProjectSubmission.project_id.in_([p.id for p in await session.exec(select(type('Project', (), {})))])
+            StudentProjectSubmission.project_id.in_([p.id for p in await session.execute(select(type('Project', (), {})))])
         )
     )
     

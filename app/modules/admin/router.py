@@ -49,7 +49,7 @@ async def list_students(
     admin: AdminUser = Depends(get_current_admin),
 ):
     """List all students (admin only)."""
-    result = await session.exec(select(Student))
+    result = await session.execute(select(Student))
     students = result.all()
     return [StudentRead.model_validate(s.model_dump()) for s in students]
 

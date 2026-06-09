@@ -28,7 +28,7 @@ async def list_career_paths(
     limit: int = 20,
     session: AsyncSession = Depends(get_session),
 ):
-    result = await session.exec(select(CareerPath).offset(skip).limit(limit))
+    result = await session.execute(select(CareerPath).offset(skip).limit(limit))
     return result.all()
 
 
@@ -42,14 +42,14 @@ async def get_career_path(
         from app.core.exceptions import NotFoundException
         raise NotFoundException(resource="Career Path")
     
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPathCourse).where(CareerPathCourse.career_path_id == path_id)
     )
     path_course_links = result.all()
     course_ids = [pcl.course_id for pcl in path_course_links]
     
     from app.modules.courses.models import Course
-    courses_result = await session.exec(
+    courses_result = await session.execute(
         select(Course).where(Course.id.in_(course_ids))
     )
     courses = courses_result.all()
@@ -89,7 +89,7 @@ async def get_my_enrollment(
     student: Student = Depends(get_current_student),
     session: AsyncSession = Depends(get_session),
 ):
-    result = await session.exec(
+    result = await session.execute(
         select(StudentCareerPath).where(
             StudentCareerPath.student_id == student.id,
             StudentCareerPath.career_path_id == path_id

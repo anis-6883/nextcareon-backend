@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  web-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+      - DEBUG=True
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
+
+  background-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - APP_ENV=development
+      - DEBUG=True
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: nextcareon-postgres
+    environment:
+      POSTGRES_USER: nextcareon_user
+      POSTGRES_PASSWORD: nextcareon_password
+      POSTGRES_DB: nextcareon_test
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nextcareon_user -d nextcareon_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: nextcareon-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -13,7 +13,7 @@ async def update_course_progress_job(student_id: str, course_id: str) -> None:
     Called when lesson/quiz is completed.
     """
     async with async_session() as session:
-        result = await session.exec(
+        result = await session.execute(
             select(StudentCourseProgress)
             .where(
                 StudentCourseProgress.student_id == student_id,

@@ -16,7 +16,7 @@ from app.modules.portfolio.models import PortfolioProject
 
 
 async def get_career_path_by_slug(session: AsyncSession, slug: str) -> Optional[CareerPath]:
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPath).where(CareerPath.slug == slug)
     )
     return result.first()
@@ -31,7 +31,7 @@ async def enroll_student_in_career_path(
     student_id: str, 
     career_path_id: str
 ) -> StudentCareerPath:
-    existing = await session.exec(
+    existing = await session.execute(
         select(StudentCareerPath).where(
             StudentCareerPath.student_id == student_id,
             StudentCareerPath.career_path_id == career_path_id
@@ -62,7 +62,7 @@ async def calculate_path_completion(
     
     completed_courses = 0
     for path_course in path.courses:
-        result = await session.exec(
+        result = await session.execute(
             select(Enrollment).where(
                 Enrollment.student_id == student_id,
                 Enrollment.course_id == path_course.course_id
@@ -129,7 +129,7 @@ async def calculate_course_completion_score(
     completed_courses = 0
     
     for path_course in path.courses:
-        result = await session.exec(
+        result = await session.execute(
             select(Enrollment).where(
                 Enrollment.student_id == student_id,
                 Enrollment.course_id == path_course.course_id
@@ -151,7 +151,7 @@ async def calculate_quiz_performance_score(
     if not course_ids:
         return 0.0
     
-    result = await session.exec(
+    result = await session.execute(
         select(QuizAttempt).where(
             QuizAttempt.student_id == student_id,
             QuizAttempt.quiz_id.in_(
@@ -177,7 +177,7 @@ async def calculate_project_quality_score(
     if not course_ids:
         return 0.0
     
-    result = await session.exec(
+    result = await session.execute(
         select(StudentProjectSubmission).where(
             StudentProjectSubmission.student_id == student_id,
             StudentProjectSubmission.project_id.in_(
@@ -202,7 +202,7 @@ async def calculate_portfolio_strength_score(
     session: AsyncSession, 
     student_id: str
 ) -> float:
-    result = await session.exec(
+    result = await session.execute(
         select(PortfolioProject).where(PortfolioProject.student_id == student_id)
     )
     projects = result.all()
@@ -236,7 +236,7 @@ async def get_company_by_id(session: AsyncSession, company_id: str) -> Optional[
 
 
 async def get_company_by_name(session: AsyncSession, name: str) -> Optional[Company]:
-    result = await session.exec(select(Company).where(Company.name == name))
+    result = await session.execute(select(Company).where(Company.name == name))
     return result.first()
 
 
@@ -252,7 +252,7 @@ async def get_salary_range_by_career_path(
     session: AsyncSession, 
     career_path_id: str
 ) -> Optional[SalaryRange]:
-    result = await session.exec(
+    result = await session.execute(
         select(SalaryRange).where(SalaryRange.career_path_id == career_path_id)
     )
     return result.first()

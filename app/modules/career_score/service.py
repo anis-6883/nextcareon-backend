@@ -24,7 +24,7 @@ from app.db.engine import engine
 
 async def get_course_completion_score(session: AsyncSession, student_id: str) -> float:
     """Calculate course completion score (0-100)."""
-    progress_records = (await session.exec(
+    progress_records = (await session.execute(
         select(StudentCourseProgress).where(StudentCourseProgress.student_id == student_id)
     )).all()
     
@@ -39,7 +39,7 @@ async def get_course_completion_score(session: AsyncSession, student_id: str) ->
 
 async def get_quiz_performance_score(session: AsyncSession, student_id: str) -> float:
     """Calculate average quiz performance score (0-100)."""
-    attempts = (await session.exec(
+    attempts = (await session.execute(
         select(QuizAttempt).where(QuizAttempt.student_id == student_id)
     )).all()
     
@@ -52,7 +52,7 @@ async def get_quiz_performance_score(session: AsyncSession, student_id: str) -> 
 
 async def get_project_quality_score(session: AsyncSession, student_id: str) -> float:
     """Calculate average project quality score (0-100)."""
-    submissions = (await session.exec(
+    submissions = (await session.execute(
         select(StudentProjectSubmission).where(
             StudentProjectSubmission.student_id == student_id,
             StudentProjectSubmission.score.isnot(None)
@@ -68,7 +68,7 @@ async def get_project_quality_score(session: AsyncSession, student_id: str) -> f
 
 async def get_portfolio_strength_score(session: AsyncSession, student_id: str) -> float:
     """Calculate portfolio strength score based on reviewed projects."""
-    projects = (await session.exec(
+    projects = (await session.execute(
         select(PortfolioProject).where(
             PortfolioProject.student_id == student_id,
             PortfolioProject.admin_quality_rating.isnot(None)
@@ -84,7 +84,7 @@ async def get_portfolio_strength_score(session: AsyncSession, student_id: str) -
 
 async def get_mock_interview_score(session: AsyncSession, student_id: str) -> float:
     """Get the best mock interview score (0-100)."""
-    credits = await session.exec(
+    credits = await session.execute(
         select(MockInterviewCredit).where(MockInterviewCredit.student_id == student_id)
     ).first()
     
@@ -114,7 +114,7 @@ async def recalculate_student_score(student_id: str) -> CareerScore:
             interview_score,
         )
         
-        career_score = (await session.exec(
+        career_score = (await session.execute(
             select(CareerScore).where(CareerScore.student_id == student_id)
         )).first()
         
@@ -156,7 +156,7 @@ async def update_leaderboard_cache(student_id: str, score: float):
 async def get_student_ranking(student_id: str) -> dict:
     """Get student's ranking and percentile."""
     async with AsyncSession(engine) as session:
-        career_score = (await session.exec(
+        career_score = (await session.execute(
             select(CareerScore).where(CareerScore.student_id == student_id)
         )).first()
         
@@ -189,11 +189,11 @@ async def get_student_public_profile(student_id: str) -> dict:
         if not student:
             return None
         
-        career_score = (await session.exec(
+        career_score = (await session.execute(
             select(CareerScore).where(CareerScore.student_id == student_id)
         )).first()
         
-        projects = (await session.exec(
+        projects = (await session.execute(
             select(PortfolioProject).where(
                 PortfolioProject.student_id == student_id,
                 PortfolioProject.admin_quality_rating.isnot(None)
@@ -231,7 +231,7 @@ async def get_student_public_profile(student_id: str) -> dict:
 async def get_score_timeline(student_id: str) -> list:
     """Get historical score timeline."""
     async with AsyncSession(engine) as session:
-        history = (await session.exec(
+        history = (await session.execute(
             select(CareerScoreHistory)
             .where(CareerScoreHistory.student_id == student_id)
             .order_by(CareerScoreHistory.recorded_at)

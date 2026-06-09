@@ -7,7 +7,7 @@ from app.modules.career_paths.models import CareerPath, CareerPathCompany, Caree
 
 async def get_companies_for_path(session: AsyncSession, path_id: str):
     """Get companies hiring for a career path."""
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPathCompany).where(CareerPathCompany.career_path_id == path_id)
     )
     return result.all()
@@ -15,7 +15,7 @@ async def get_companies_for_path(session: AsyncSession, path_id: str):
 
 async def get_jobs_for_path(session: AsyncSession, path_id: str, location: str = "Bangladesh"):
     """Get job openings for a career path."""
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPathJobOpening)
         .where(
             CareerPathJobOpening.career_path_id == path_id,
@@ -27,7 +27,7 @@ async def get_jobs_for_path(session: AsyncSession, path_id: str, location: str =
 
 async def get_alumni_for_path(session: AsyncSession, path_id: str):
     """Get alumni featured for a career path."""
-    result = await session.exec(
+    result = await session.execute(
         select(CareerPath).where(CareerPath.id == path_id)
     )
     path = result.first()

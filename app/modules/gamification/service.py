@@ -36,7 +36,7 @@ AI_QUESTIONS_PER_EXCHANGE = 10
 
 async def get_or_create_balance(session: AsyncSession, student_id: str) -> UserBalance:
     """Get or create user balance record."""
-    balance = (await session.exec(
+    balance = (await session.execute(
         select(UserBalance).where(UserBalance.student_id == student_id)
     )).first()
     
@@ -202,7 +202,7 @@ async def exchange_ai_credits(
     if not success:
         return False, msg
     
-    ai_gate = (await session.exec(
+    ai_gate = (await session.execute(
         select(AiCreditGate).where(AiCreditGate.student_id == student_id)
     )).first()
     
@@ -219,8 +219,8 @@ async def exchange_ai_credits(
 
 async def check_and_unlock_achievements(session: AsyncSession, student_id: str):
     """Check if student has unlocked new achievements."""
-    achievements = (await session.exec(select(Achievement))).all()
-    user_achievements = (await session.exec(
+    achievements = (await session.execute(select(Achievement))).all()
+    user_achievements = (await session.execute(
         select(UserAchievement).where(UserAchievement.student_id == student_id)
     )).all()
     unlocked_achievement_ids = {ua.achievement_id for ua in user_achievements}
@@ -268,7 +268,7 @@ async def create_achievement(
 
 async def get_student_achievements(session: AsyncSession, student_id: str) -> list:
     """Get all achievements unlocked by a student."""
-    user_achievements = (await session.exec(
+    user_achievements = (await session.execute(
         select(UserAchievement)
         .where(UserAchievement.student_id == student_id)
         .join(Achievement)
@@ -310,7 +310,7 @@ async def create_inventory_item(
 
 async def get_store_items(session: AsyncSession) -> list:
     """Get all available store items."""
-    items = (await session.exec(select(InventoryItem))).all()
+    items = (await session.execute(select(InventoryItem))).all()
     return [
         {
             "id": item.id,
