@@ -14,6 +14,7 @@ from app.core.exceptions import (
     InsufficientCoinsException,
 )
 from app.api.v1.middleware.rate_limiter import limiter, register_rate_limiter
+from app.api.v1.middleware.rbac import AdminRBACMiddleware
 from app.core.logging import setup_logging
 
 
@@ -28,6 +29,9 @@ app = FastAPI(
 )
 
 register_rate_limiter(app)
+
+# Global RBAC enforcement for admin routes (must be first)
+app.add_middleware(AdminRBACMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
